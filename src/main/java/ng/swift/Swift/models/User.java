@@ -34,5 +34,9 @@ public class User {
 
     private Date lastUpdated;
 
+    @OneToOne
+    @JoinColumn(name = "photo")
+    private ImageFile photo;
+
 
 }

@@ -1,13 +1,12 @@
 package ng.swift.Swift.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
-import ng.swift.Swift.dto.AddressDto;
-import ng.swift.Swift.dto.GPSCoordinateDto;
-import ng.swift.Swift.dto.MealOrderDto;
-import ng.swift.Swift.dto.OrderItemsDto;
+import ng.swift.Swift.dto.*;
 import ng.swift.Swift.exception.ErrorResponse;
 import ng.swift.Swift.models.*;
 import ng.swift.Swift.repositories.*;
+import ng.swift.Swift.service.AddressService;
+import ng.swift.Swift.service.GPSCoordinateService;
 import ng.swift.Swift.service.OrderItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +25,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     private final MealRepository mealRepository;
     private final OrderItemRepository orderItemRepository;
     private final RestaurantOrderItemRepository restaurantOrderItemRepository;
-    private final StateRepository stateRepository;
-    private final GPSCoordinateRepository gpsCoordinateRepository;
-    private final AddressRepository addressRepository;
+    private final AddressService addressService;
+    private final GPSCoordinateService gpsCoordinateService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
@@ -61,33 +59,11 @@ public class OrderItemServiceImpl implements OrderItemService {
         return "Order Placed";
     }
 
+
     private Address createAddress(AddressDto addressDto){
-        State state = stateRepository.findByCode(addressDto.getStateCode()).orElseThrow(()->new ErrorResponse(HttpStatus.NOT_FOUND,"State not found"));
-        Address address = new Address();
-        address.setType(AddressTypeConstant.DELIVERY);
-        address.setStatus(EntityStatusConstant.ACTIVE);
-        address.setState(state);
-        address.setStreetAddress(addressDto.getStreetAddress());
-        if(addressDto.getHouseNumber() != null){
-            address.setHouseNumber(addressDto.getHouseNumber());
-        }
-        if(addressDto.getGpsCoordinate() != null){
-            GPSCoordinate gpsCoordinate = setGPSCoordinate(addressDto.getGpsCoordinate());
-            address.setGpsCoordinate(gpsCoordinate);
-        }
-        return addressRepository.save(address);
-
-
+        GPSCoordinate gpsCoordinate = gpsCoordinateService.saveGps(addressDto.getGpsCoordinate());
+        return addressService.saveAddress(addressDto,gpsCoordinate,AddressTypeConstant.DELIVERY);
     }
-
-    private GPSCoordinate setGPSCoordinate(GPSCoordinateDto gpsCoordinateDto){
-        GPSCoordinate gpsCoordinate = new GPSCoordinate();
-        gpsCoordinate.setStatus(EntityStatusConstant.ACTIVE);
-        gpsCoordinate.setLatitude(gpsCoordinateDto.getLatitude());
-        gpsCoordinate.setLongitude(gpsCoordinateDto.getLongitude());
-        return gpsCoordinateRepository.save(gpsCoordinate);
-    }
-
 
     private void createRestaurantOrderItem(User user, Restaurant restaurant, OrderItem orderItem, Address address, Date orderDate ){
         RestaurantOrderItem restaurantOrderItem = new RestaurantOrderItem();
@@ -100,4 +76,20 @@ public class OrderItemServiceImpl implements OrderItemService {
         restaurantOrderItem.setOrderStatus(OrderStatusConstant.NOT_STARTED);
         restaurantOrderItemRepository.save(restaurantOrderItem);
     }
+
+    @Transactional
+    @Override
+    public String setOrderStatus(OrderItemStatusDto dto) {
+        RestaurantOrderItem restaurantOrderItem = restaurantOrderItemRepository.findActiveById(dto.getId())
+                .orElseThrow(()-> new ErrorResponse(HttpStatus.BAD_REQUEST,"Order not found"));
+        restaurantOrderItem.setOrderStatus(dto.getStatus());
+
+        if(restaurantOrderItem.getOrderStatus() == OrderStatusConstant.CANCELLED){
+            restaurantOrderItem.setStatus(EntityStatusConstant.DEACTIVATED);
+        }else if(restaurantOrderItem.getOrderStatus() == OrderStatusConstant.PREPARED){
+
+        }
+        return null;
+    }
+
 }

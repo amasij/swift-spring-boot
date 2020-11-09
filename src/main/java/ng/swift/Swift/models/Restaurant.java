@@ -21,6 +21,7 @@ public class Restaurant {
     @Column(nullable=false,unique=true)
     private String phoneNumber;
 
+    @Column(unique=true)
     private String alternatePhoneNumber;
 
     @Column(nullable=false)
@@ -31,6 +32,14 @@ public class Restaurant {
     private EntityStatusConstant status;
 
     @OneToOne
-    @JoinColumn(name = "address")
+    @JoinColumn(name = "address", nullable = false)
     private Address address;
+
+    @OneToOne
+    @JoinColumn(name = "admin", nullable = false)
+    private User admin;
+
+    @OneToOne
+    @JoinColumn(name = "photo")
+    private ImageFile photo;
 }

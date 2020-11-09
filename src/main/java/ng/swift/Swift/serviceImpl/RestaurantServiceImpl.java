@@ -8,7 +8,10 @@ import ng.swift.Swift.repositories.AddressRepository;
 import ng.swift.Swift.repositories.GPSCoordinateRepository;
 import ng.swift.Swift.repositories.RestaurantRepository;
 import ng.swift.Swift.repositories.StateRepository;
+import ng.swift.Swift.service.AddressService;
+import ng.swift.Swift.service.GPSCoordinateService;
 import ng.swift.Swift.service.RestaurantService;
+import ng.swift.Swift.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,34 +22,19 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
-    private final GPSCoordinateRepository gpsCoordinateRepository;
-    private final AddressRepository addressRepository;
-    private final StateRepository stateRepository;
+    private final AddressService addressService;
+    private final GPSCoordinateService gpsCoordinateService;
+    private final UserService userService;
 
     @Transactional
     @Override
     public Restaurant createRestaurant(RestaurantCreationDto dto) {
-        State state = stateRepository.findByCode(dto.getAddress().getStateCode()).orElseThrow(()->new ErrorResponse(HttpStatus.NOT_FOUND,"State not found"));
+
         GPSCoordinate savedCoordinate = null;
-        if(dto.getAddress().getGpsCoordinate() != null){
-            GPSCoordinate gpsCoordinate = new GPSCoordinate();
-            gpsCoordinate.setLatitude(dto.getAddress().getGpsCoordinate().getLatitude());
-            gpsCoordinate.setLongitude(dto.getAddress().getGpsCoordinate().getLongitude());
-            gpsCoordinate.setStatus(EntityStatusConstant.ACTIVE);
-            savedCoordinate = gpsCoordinateRepository.save(gpsCoordinate);
+        if (dto.getAddress().getGpsCoordinate() != null) {
+            savedCoordinate = gpsCoordinateService.saveGps(dto.getAddress().getGpsCoordinate());
         }
-
-
-        Address address = new Address();
-        if(savedCoordinate != null){
-            address.setGpsCoordinate(savedCoordinate);
-        }
-        address.setHouseNumber(dto.getAddress().getHouseNumber());
-        address.setState(state);
-        address.setStreetAddress(dto.getAddress().getStreetAddress());
-        address.setStatus(EntityStatusConstant.ACTIVE);
-        address.setType(AddressTypeConstant.CREATION);
-        Address savedAddress =  addressRepository.save(address);
+        Address savedAddress = addressService.saveAddress(dto.getAddress(), savedCoordinate, AddressTypeConstant.CREATION);
 
         Restaurant restaurant = new Restaurant();
         restaurant.setAddress(savedAddress);
@@ -54,15 +42,18 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setName(dto.getName());
         restaurant.setEmail(dto.getEmail());
         restaurant.setPhoneNumber(dto.getPhoneNumber());
-        if(dto.getAlternatePhoneNumber() != null){
+        if (dto.getAlternatePhoneNumber() != null) {
             restaurant.setAlternatePhoneNumber(dto.getAlternatePhoneNumber());
         }
         restaurant.setStatus(EntityStatusConstant.ACTIVE);
+        User admin = userService.registerUser(dto.getAdmin());
+        restaurant.setAdmin(admin);
         return restaurantRepository.save(restaurant);
     }
 
     @Override
     public Restaurant getRestaurant(Long id) {
-        return restaurantRepository.findActiveById(id).orElseThrow(()-> new ErrorResponse(HttpStatus.BAD_REQUEST,"Invalid Restaurant"));
+        return restaurantRepository.findActiveById(id)
+                .orElseThrow(() -> new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Restaurant"));
     }
 }

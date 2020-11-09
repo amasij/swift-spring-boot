@@ -13,6 +13,12 @@ public interface MealCategoryRepository extends JpaRepository<MealCategory, Long
     @Query("SELECT mc FROM MealCategory mc WHERE mc.status = 'ACTIVE' AND lower(mc.name) = ?1")
     Optional<MealCategory> findActiveByName(String name);
 
+    @Query("SELECT mc FROM MealCategory mc WHERE mc.status = 'ACTIVE' AND mc.code = ?1")
+    Optional<MealCategory> findActiveByCode(String code);
+
+    @Query("SELECT mc FROM MealCategory mc WHERE mc.status = 'ACTIVE' AND mc.code in ?1")
+    List<MealCategory> findActiveByCodes(List<String> codes);
+
     @Query("SELECT mc FROM MealCategory mc WHERE mc.status = 'ACTIVE' AND mc.id = ?1 ")
     Optional<MealCategory> findActiveById(Long id);
 

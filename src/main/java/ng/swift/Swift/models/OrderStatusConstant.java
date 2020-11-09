@@ -5,14 +5,17 @@ import java.util.*;
 public enum OrderStatusConstant {
     NOT_STARTED("NOT_STARTED"),
     IN_PROGRESS("IN_PROGRESS"),
-    FINISHED("FINISHED");
+    PREPARED("PREPARED"),
+    AWAITING_DELIVERY("AWAITING_DELIVERY"),
+    FINISHED("FINISHED"),
+    CANCELLED("CANCELLED");
 
     private static final long serialVersionUID = -9086148061317024860L;
     private final String enumValue;
-    private static Map<String, OrderStatusConstant> values = new LinkedHashMap(3, 1.0F);
-    private static List<String> literals = new ArrayList(3);
-    private static List<String> names = new ArrayList(3);
-    private static List<OrderStatusConstant> valueList = new ArrayList(3);
+    private static Map<String, OrderStatusConstant> values = new LinkedHashMap(6, 1.0F);
+    private static List<String> literals = new ArrayList(6);
+    private static List<String> names = new ArrayList(6);
+    private static List<OrderStatusConstant> valueList = new ArrayList(6);
 
     private OrderStatusConstant(String value) {
         this.enumValue = value;
@@ -57,12 +60,18 @@ public enum OrderStatusConstant {
             values.put(NOT_STARTED.enumValue, NOT_STARTED);
             values.put(IN_PROGRESS.enumValue, IN_PROGRESS);
             values.put(FINISHED.enumValue, FINISHED);
+            values.put(CANCELLED.enumValue, CANCELLED);
+            values.put(AWAITING_DELIVERY.enumValue, AWAITING_DELIVERY);
+            values.put(PREPARED.enumValue, PREPARED);
         }
 
         synchronized(valueList) {
             valueList.add(NOT_STARTED);
             valueList.add(IN_PROGRESS);
             valueList.add(FINISHED);
+            valueList.add(CANCELLED);
+            valueList.add(AWAITING_DELIVERY);
+            valueList.add(PREPARED);
             valueList = Collections.unmodifiableList(valueList);
         }
 
@@ -70,6 +79,9 @@ public enum OrderStatusConstant {
             literals.add(NOT_STARTED.enumValue);
             literals.add(IN_PROGRESS.enumValue);
             literals.add(FINISHED.enumValue);
+            literals.add(CANCELLED.enumValue);
+            literals.add(AWAITING_DELIVERY.enumValue);
+            literals.add(PREPARED.enumValue);
             literals = Collections.unmodifiableList(literals);
         }
 
@@ -77,6 +89,9 @@ public enum OrderStatusConstant {
             names.add("NOT_STARTED");
             names.add("IN_PROGRESS");
             names.add("FINISHED");
+            names.add("CANCELLED");
+            names.add("AWAITING_DELIVERY");
+            names.add("PREPARED");
             names = Collections.unmodifiableList(names);
         }
     }

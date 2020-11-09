@@ -2,6 +2,8 @@ package ng.swift.Swift.controllers;
 
 import lombok.RequiredArgsConstructor;
 import ng.swift.Swift.dto.MealOrderDto;
+import ng.swift.Swift.dto.OrderItemStatusDto;
+import ng.swift.Swift.models.OrderStatusConstant;
 import ng.swift.Swift.models.User;
 import ng.swift.Swift.service.OrderItemService;
 import ng.swift.Swift.service.UserService;
@@ -20,6 +22,12 @@ public class OrderItemController {
 
     @PostMapping("/place/{id:\\d+}")
     public ResponseEntity<?> placeOrder(@PathVariable("id") Long userId, @Valid @RequestBody MealOrderDto dto){
+        User user = userService.getUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(orderItemService.placeOrder(user, dto));
+    }
+
+    @PostMapping("/status")
+    public ResponseEntity<?> setOrderStatus(@Valid @RequestBody OrderItemStatusDto dto){
         User user = userService.getUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(orderItemService.placeOrder(user, dto));
     }

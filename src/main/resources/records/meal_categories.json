@@ -1,29 +1,38 @@
 [
   {
-    "name": "Vegan"
+    "name": "Vegan",
+    "code": "MC00001"
   },
   {
-    "name": "Meats"
+    "name": "Meats",
+    "code": "MC00002"
   },
   {
-    "name": "Local"
+    "name": "Local",
+    "code": "MC00003"
   },
   {
-    "name": "Fast Food"
+    "name": "Fast Food",
+    "code": "MC00004"
   },
   {
-    "name": "Snacks"
+    "name": "Snacks",
+    "code": "MC00005"
   },
   {
-    "name": "Sea Food"
+    "name": "Sea Food",
+    "code": "MC00006"
   },
   {
-    "name": "Chinese"
+    "name": "Chinese",
+    "code": "MC00007"
   },
   {
-    "name": "Indian"
+    "name": "Indian",
+    "code": "MC00008"
   },
   {
-    "name": "Fish"
+    "name": "Fish",
+    "code": "MC00009"
   }
 ]

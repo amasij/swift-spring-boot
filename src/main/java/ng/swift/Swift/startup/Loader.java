@@ -13,12 +13,9 @@ import ng.swift.Swift.repositories.MealCategoryRepository;
 import ng.swift.Swift.repositories.StateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 import java.io.IOException;
@@ -79,7 +76,7 @@ public class Loader {
 
             List<MealCategory> mealCategories = new ArrayList<>();
             for (MealCategory mealCategory : dtoList) {
-                if(!mealCategoryRepository.findActiveByName(mealCategory.getName().toLowerCase().trim()).isPresent()){
+                if(!mealCategoryRepository.findActiveByCode(mealCategory.getCode()).isPresent()){
                     mealCategory.setId(null);
                     mealCategory.setStatus(EntityStatusConstant.ACTIVE);
                     mealCategories.add(mealCategory);
