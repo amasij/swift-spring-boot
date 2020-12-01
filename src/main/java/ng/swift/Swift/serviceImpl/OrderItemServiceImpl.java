@@ -8,6 +8,7 @@ import ng.swift.Swift.repositories.*;
 import ng.swift.Swift.service.AddressService;
 import ng.swift.Swift.service.GPSCoordinateService;
 import ng.swift.Swift.service.OrderItemService;
+import ng.swift.Swift.service.RiderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     private final RestaurantOrderItemRepository restaurantOrderItemRepository;
     private final AddressService addressService;
     private final GPSCoordinateService gpsCoordinateService;
+    private final RiderService riderService;
+    private final DeliveryRepository deliveryRepository;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
@@ -79,7 +82,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Transactional
     @Override
-    public String setOrderStatus(OrderItemStatusDto dto) {
+    public Delivery setOrderStatus(OrderItemStatusDto dto) {
         RestaurantOrderItem restaurantOrderItem = restaurantOrderItemRepository.findActiveById(dto.getId())
                 .orElseThrow(()-> new ErrorResponse(HttpStatus.BAD_REQUEST,"Order not found"));
         restaurantOrderItem.setOrderStatus(dto.getStatus());
@@ -87,8 +90,18 @@ public class OrderItemServiceImpl implements OrderItemService {
         if(restaurantOrderItem.getOrderStatus() == OrderStatusConstant.CANCELLED){
             restaurantOrderItem.setStatus(EntityStatusConstant.DEACTIVATED);
         }else if(restaurantOrderItem.getOrderStatus() == OrderStatusConstant.PREPARED){
-
+            Rider rider = riderService.findRider(restaurantOrderItem);
+                if(rider != null){
+//                    restaurantOrderItem.setOrderStatus(OrderStatusConstant.AWAITING_DELIVERY);
+                    Delivery delivery = new Delivery();
+                    delivery.setDeliveryStatus(DeliveryStatusConstant.AWAITING_PICKUP);
+                    delivery.setRestaurantOrderItem(restaurantOrderItem);
+                    delivery.setRider(rider);
+                    restaurantOrderItemRepository.save(restaurantOrderItem);
+                    return deliveryRepository.save(delivery);
+                }
         }
+        restaurantOrderItemRepository.save(restaurantOrderItem);
         return null;
     }
 

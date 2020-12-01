@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +26,8 @@ public class MealServiceImpl implements MealService {
     private final RestaurantMealCategoryRepository restaurantMealCategoryRepository;
     private final MealRepository mealRepository;
     private final MealCategoryRepository mealCategoryRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     @Override

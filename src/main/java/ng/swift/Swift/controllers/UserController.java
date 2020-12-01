@@ -3,6 +3,7 @@ package ng.swift.Swift.controllers;
 import lombok.RequiredArgsConstructor;
 import ng.swift.Swift.dto.UserCreationDto;
 import ng.swift.Swift.models.User;
+import ng.swift.Swift.pojo.UserPojo;
 import ng.swift.Swift.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,14 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public User registerUser(@Valid @RequestBody UserCreationDto dto){
-        return userService.registerUser(dto);
+    public UserPojo registerUser(@Valid @RequestBody UserCreationDto dto) {
+        User user = userService.registerUser(dto);
+        return UserPojo.from(user);
     }
 
     @GetMapping("/{id:\\d+}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(id));
+    public ResponseEntity<UserPojo> getUser(@PathVariable("id") Long id) {
+        User user = userService.getUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(UserPojo.from(user));
     }
 }

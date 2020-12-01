@@ -1,5 +1,9 @@
 [
   {
+    "name": "All",
+    "code": "MC00000"
+  },
+  {
     "name": "Vegan",
     "code": "MC00001"
   },
