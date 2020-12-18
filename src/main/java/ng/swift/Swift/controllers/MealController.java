@@ -8,6 +8,7 @@ import ng.swift.Swift.models.Meal;
 import ng.swift.Swift.models.MealCategory;
 import ng.swift.Swift.models.Restaurant;
 import ng.swift.Swift.models.User;
+import ng.swift.Swift.pojo.MealPojo;
 import ng.swift.Swift.repositories.MealCategoryRepository;
 import ng.swift.Swift.repositories.RestaurantRepository;
 import ng.swift.Swift.service.MealService;
@@ -42,6 +43,11 @@ public class MealController {
     @GetMapping("/{id:\\d+}")
     public ResponseEntity<Meal> getMeal(@PathVariable("id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(mealService.getMeal(id));
+    }
+
+    @GetMapping("/user-meals/{id:\\d+}")
+    public ResponseEntity<List<MealPojo>> getUserMeals(@PathVariable("id") Long userId){
+        return ResponseEntity.status(HttpStatus.OK).body(mealService.getUserMeal(userId));
     }
 
 }

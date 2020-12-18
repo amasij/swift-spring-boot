@@ -1,8 +1,12 @@
 package ng.swift.Swift.controllers;
 
 import lombok.RequiredArgsConstructor;
+import ng.swift.Swift.dto.LoginDto;
 import ng.swift.Swift.dto.UserCreationDto;
+import ng.swift.Swift.dto.UserPreferenceDto;
+import ng.swift.Swift.models.MealCategory;
 import ng.swift.Swift.models.User;
+import ng.swift.Swift.pojo.MealCategoryPojo;
 import ng.swift.Swift.pojo.UserPojo;
 import ng.swift.Swift.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,9 +30,20 @@ public class UserController {
         return UserPojo.from(user);
     }
 
+    @PostMapping("/login")
+    public UserPojo login(@Valid @RequestBody LoginDto dto) {
+        User user = userService.loginUser(dto);
+        return UserPojo.from(user);
+    }
+
     @GetMapping("/{id:\\d+}")
     public ResponseEntity<UserPojo> getUser(@PathVariable("id") Long id) {
         User user = userService.getUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(UserPojo.from(user));
+    }
+
+    @PostMapping("/food/preference//{id:\\d+}")
+    public ResponseEntity<List<MealCategoryPojo>> setUserPreferences(@PathVariable("id") Long id, @Valid @RequestBody UserPreferenceDto dto){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.setFoodPreferences(id, dto.getCodes()));
     }
 }

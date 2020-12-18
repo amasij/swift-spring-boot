@@ -22,4 +22,7 @@ public class MealCategoryController {
     public ResponseEntity<List<MealCategory>> getMeal(){
         return ResponseEntity.status(HttpStatus.OK).body(mealCategoryRepository.findAllActive());
     }
+
+
+
 }

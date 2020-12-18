@@ -16,4 +16,6 @@ public class MealCreationDto {
     private BigDecimal price;
     @Size(min = 1)
     private List<Long> mealCategoryIds;
+    @NotBlank
+    private String description;
 }

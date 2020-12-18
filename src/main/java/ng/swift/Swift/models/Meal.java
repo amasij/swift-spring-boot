@@ -22,6 +22,9 @@ public class Meal {
     @Column(nullable=false)
     private Date dateCreated;
 
+    @Column(nullable=false)
+    private String description;
+
     @OneToOne
     @JoinColumn(name = "restaurant", nullable = false)
     private Restaurant restaurant;
