@@ -1,5 +1,8 @@
 package ng.swift.Swift.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import ng.swift.Swift.dto.LoginDto;
 import ng.swift.Swift.dto.UserCreationDto;
@@ -25,6 +28,8 @@ public class UserController {
 
 
     @PostMapping("/register")
+    @Operation(summary = "Register user", description = "Call this API to register a new user")
+    @ApiResponses(value = @ApiResponse(responseCode = "200", description = "New user has been registered"))
     public UserPojo registerUser(@Valid @RequestBody UserCreationDto dto) {
         User user = userService.registerUser(dto);
         return UserPojo.from(user);

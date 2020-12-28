@@ -22,7 +22,7 @@ public class OrderItemController {
 
 
     @PostMapping("/place/{id:\\d+}")
-    public ResponseEntity<?> placeOrder(@PathVariable("id") Long userId, @Valid @RequestBody MealOrderDto dto){
+    public ResponseEntity<String> placeOrder(@PathVariable("id") Long userId, @Valid @RequestBody MealOrderDto dto){
         User user = userService.getUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(orderItemService.placeOrder(user, dto));
     }

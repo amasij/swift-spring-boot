@@ -39,6 +39,16 @@ public class ErrorControllerAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(ErrorResponse.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Response<String>> handle(ErrorResponse e) {
+        logger.info(e.toString());
+        Response<String> response = new Response<String>();
+        response.setCode(e.getCode());
+        response.setMessage(e.getMessageKey());
+        return ResponseEntity.status(e.getCode()).body(response);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Response<String>> handle(DataIntegrityViolationException e) {

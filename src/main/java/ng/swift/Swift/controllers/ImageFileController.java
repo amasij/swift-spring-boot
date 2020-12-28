@@ -24,28 +24,32 @@ public class ImageFileController {
     private final ImageFileService imageFileService;
     private final ImageFileRepository imageFileRepository;
 
-//    @PostMapping("/upload")
-//    public ResponseEntity<UploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-//        ImageFile imageFile = imageFileService.uploadImageFile(file);
-//        UploadFileResponse response = new UploadFileResponse(imageFile.getName(),
-//                null,
-//                file.getContentType(),
-//                imageFile.getId(),
-//                file.getSize());
-//        return ResponseEntity.ok(response);
-//    }
-//
-//
-//    @GetMapping("/{id:[0-9]+}")
-//    public RedirectView downloadFile(@PathVariable("id")
-//                                             long id, HttpServletResponse response) throws IOException {
-//        ImageFile file = imageFileRepository.findById(id).orElseThrow(() -> new ErrorResponse(HttpStatus.NOT_FOUND, "File not found"));
-////        if (StringUtils.isNotBlank(file.getExternalReferencePath())) {
-////            return new RedirectView(bwFile.getExternalReferencePath());
-////        }
-//        response.setContentType(file.getContentType());
-//        IOUtils.write(file.getData(), response.getOutputStream());
-//        response.flushBuffer();
-//        return null;
-//    }
+    @PostMapping("/upload")
+    public ResponseEntity<UploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+
+        if(file.getSize() > 5000){
+            throw new ErrorResponse(HttpStatus.BAD_REQUEST, "File must not be larger than 500KB");
+        }
+        ImageFile imageFile = imageFileService.uploadImageFile(file);
+        UploadFileResponse response = new UploadFileResponse(imageFile.getName(),
+                null,
+                file.getContentType(),
+                imageFile.getId(),
+                file.getSize());
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/{id:[0-9]+}")
+    public RedirectView downloadFile(@PathVariable("id")
+                                             long id, HttpServletResponse response) throws IOException {
+        ImageFile file = imageFileRepository.findById(id).orElseThrow(() -> new ErrorResponse(HttpStatus.NOT_FOUND, "File not found"));
+//        if (StringUtils.isNotBlank(file.getExternalReferencePath())) {
+//            return new RedirectView(bwFile.getExternalReferencePath());
+//        }
+        response.setContentType(file.getContentType());
+        IOUtils.write(file.getData(), response.getOutputStream());
+        response.flushBuffer();
+        return null;
+    }
 }

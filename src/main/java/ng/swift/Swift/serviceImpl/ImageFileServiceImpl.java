@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 @Named
 @RequiredArgsConstructor
@@ -25,5 +26,10 @@ public class ImageFileServiceImpl implements ImageFileService {
         imageFile.setName(file.getOriginalFilename());
         imageFile.setStatus(EntityStatusConstant.ACTIVE);
         return imageFileRepository.save(imageFile);
+    }
+
+    @Override
+    public Optional<ImageFile> getImageFile(Long id) {
+        return imageFileRepository.findById(id);
     }
 }

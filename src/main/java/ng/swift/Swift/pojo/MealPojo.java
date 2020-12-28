@@ -17,7 +17,7 @@ public class MealPojo {
     private String name;
     private BigDecimal price;
     private String description;
-    private Restaurant restaurant;
+    private Long restaurantId;
 
     public static MealPojo from(Meal meal){
         return getMealPojo(meal);
@@ -32,7 +32,7 @@ public class MealPojo {
         pojo.setId(meal.getId());
         pojo.setDescription(meal.getDescription());
         pojo.setName(meal.getName());
-        pojo.setRestaurant(meal.getRestaurant());
+        pojo.setRestaurantId(meal.getRestaurant().getId());
         pojo.setPrice(meal.getPrice());
         pojo.setImage(meal.getPhoto().getId());
         return pojo;

@@ -3,6 +3,7 @@ package ng.swift.Swift.dto;
 import lombok.Getter;
 import lombok.Setter;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,4 +19,7 @@ public class MealCreationDto {
     private List<Long> mealCategoryIds;
     @NotBlank
     private String description;
+    @NotNull
+    @NotBlank
+    private Long imageId;
 }
