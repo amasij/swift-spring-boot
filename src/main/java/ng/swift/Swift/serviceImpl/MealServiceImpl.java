@@ -68,25 +68,23 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public QueryResults<MealPojo> getUserMeal(MealFilter filter) {
-
         User user = userService.getUser(filter.getUserId());
         List<MealCategory> mealCategories = preferenceRepository.getActivePreferencesByUser(user)
                 .stream().map(Preference::getMealCategory)
                 .collect(Collectors.toList());
 
         JPAQuery<RestaurantMealCategory> jpaQuery = appRepository.startJPAQuery(QRestaurantMealCategory.restaurantMealCategory)
-                .innerJoin(QRestaurantMealCategory.restaurantMealCategory.meal).fetchJoin()
-                .limit(filter.getLimit().orElse(15))
-                .offset(filter.getOffset().orElse(0));
-
+                .innerJoin(QRestaurantMealCategory.restaurantMealCategory).fetchJoin();
         if (!mealCategories.isEmpty()) {
             jpaQuery.where(QRestaurantMealCategory.restaurantMealCategory.mealCategory.in(mealCategories));
         }
+        QueryResults<Meal> fetchedResults = jpaQuery.where(QRestaurantMealCategory.restaurantMealCategory.status.eq(EntityStatusConstant.ACTIVE))
+                .limit(filter.getLimit().orElse(15))
+                .offset(filter.getOffset().orElse(0))
+                .select(QRestaurantMealCategory.restaurantMealCategory.meal)
+                .distinct().fetchResults();
 
-        QueryResults<RestaurantMealCategory> fetchedResults = jpaQuery.fetchResults();
-        List<Meal> userMeals = fetchedResults.getResults().stream().map(RestaurantMealCategory::getMeal).distinct().collect(Collectors.toList());
-
-        return new QueryResults<>(MealPojo.from(userMeals), fetchedResults.getLimit(), fetchedResults.getOffset(), fetchedResults.getTotal());
+        return new QueryResults<>(MealPojo.from(fetchedResults.getResults()), fetchedResults.getLimit(), fetchedResults.getOffset(), fetchedResults.getTotal());
 
     }
 }

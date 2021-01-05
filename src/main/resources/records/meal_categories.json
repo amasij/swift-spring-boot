@@ -1,8 +1,5 @@
 [
-  {
-    "name": "All",
-    "code": "MC00000"
-  },
+
   {
     "name": "Vegan",
     "code": "MC00001"
@@ -20,10 +17,6 @@
     "code": "MC00004"
   },
   {
-    "name": "Snacks",
-    "code": "MC00005"
-  },
-  {
     "name": "Sea Food",
     "code": "MC00006"
   },
@@ -34,9 +27,5 @@
   {
     "name": "Indian",
     "code": "MC00008"
-  },
-  {
-    "name": "Fish",
-    "code": "MC00009"
   }
 ]

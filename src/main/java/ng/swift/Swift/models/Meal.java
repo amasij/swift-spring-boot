@@ -13,7 +13,7 @@ public class Meal {
     private @Id
     @GeneratedValue(strategy= GenerationType.AUTO) Long id;
 
-    @Column(nullable=false, unique = true)
+    @Column(nullable=false)
     private String name;
 
     @Column(nullable=false)

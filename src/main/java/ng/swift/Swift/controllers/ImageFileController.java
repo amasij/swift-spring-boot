@@ -27,7 +27,7 @@ public class ImageFileController {
     @PostMapping("/upload")
     public ResponseEntity<UploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
 
-        if(file.getSize() > 5000){
+        if(file.getSize() > 500000){
             throw new ErrorResponse(HttpStatus.BAD_REQUEST, "File must not be larger than 500KB");
         }
         ImageFile imageFile = imageFileService.uploadImageFile(file);
